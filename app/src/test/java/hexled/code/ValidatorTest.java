@@ -4,6 +4,7 @@ import hexlet.code.Validator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -80,6 +81,47 @@ public class ValidatorTest {
     @NullAndEmptySource
     public void testStringSchemaContainsReturnsTrueIfContainsWhenRequired(String input) {
         var schema = validator.string().required().contains("he");
+
+        assertFalse(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    public void testNumberSchemaRequiredReturnsFalseIfNullSource(Integer input) {
+        var schema = validator.number().required();
+
+        assertFalse(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 1})
+    public void testNumberSchemaRequiredReturnsTrueForNonNull(Integer input) {
+        var schema = validator.number().required();
+
+        assertTrue(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    public void testNumberSchemaPositiveReturnsFalse(Integer input) {
+        var schema = validator.number().positive();
+
+        assertFalse(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(ints = {-1, 0, 1})
+    public void testNumberSchemaRangeReturnsTrueForNullOrAnyInRange(Integer input) {
+        var schema = validator.number().range(-1, 1);
+
+        assertTrue(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-2, 2})
+    public void testNumberSchemaRangeReturnsFalseForAnyOutside(Integer input) {
+        var schema = validator.number().range(-1, 1);
 
         assertFalse(schema.isValid(input));
     }
