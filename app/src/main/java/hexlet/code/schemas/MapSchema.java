@@ -17,6 +17,20 @@ public class MapSchema extends BaseSchema<Map> {
         return this;
     }
 
+    public MapSchema shape(Map<String, BaseSchema<String>> schemas) {
+        addCheck("shape",
+                map -> {
+                    var result = schemas.entrySet()
+                            .stream()
+                            .reduce(true, (acc, entry) ->
+                                            acc && entry.getValue().isValid((String) map.get(entry.getKey())),
+                                    (acc1, acc2) -> acc1 && acc2);
+                    return result;
+                }
+        );
+        return this;
+    }
+
     @Override
     protected boolean isBlank(Map value) {
         return value == null;

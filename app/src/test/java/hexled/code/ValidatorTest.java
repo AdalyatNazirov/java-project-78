@@ -1,6 +1,7 @@
 package hexled.code;
 
 import hexlet.code.Validator;
+import hexlet.code.schemas.BaseSchema;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +9,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -161,10 +163,42 @@ public class ValidatorTest {
     }
 
     @Test
-    void testMapSchemaMinLengthReturnsFalseIfNullOrExactSize() {
+    public void testMapSchemaMinLengthReturnsFalseIfNullOrExactSize() {
         var schema = validator.map().sizeof(2);
 
         assertTrue(schema.isValid(null));
         assertTrue(schema.isValid(Map.of("a", 1, "b", 2)));
+    }
+
+    @Test
+    public void testMapSchemaShapeReturnsTrue() {
+        var schema = validator.map();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+
+        schemas.put("firstName", validator.string().required());
+        schemas.put("lastName", validator.string().required().minLength(2));
+
+        schema.shape(schemas);
+
+        Map<String, String> human1 = new HashMap<>();
+        human1.put("firstName", "John");
+        human1.put("lastName", "Smith");
+        schema.isValid(human1);
+    }
+
+    @Test
+    public void testMapSchemaShapeReturnsFalse() {
+        var schema = validator.map();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+
+        schemas.put("firstName", validator.string().required());
+        schemas.put("lastName", validator.string().required().minLength(2));
+
+        schema.shape(schemas);
+
+        Map<String, String> human1 = new HashMap<>();
+        human1.put("firstName", "John");
+        human1.put("lastName", null);
+        schema.isValid(human1);
     }
 }

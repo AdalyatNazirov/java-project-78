@@ -14,11 +14,7 @@ public abstract class BaseSchema<T> {
 
     public boolean isValid(T value) {
         if (isBlank(value)) {
-            if (required) {
-                return false;
-            } else {
-                return true;
-            }
+            return !required;
         }
 
         for (Predicate<T> predicate : checks.values()) {
