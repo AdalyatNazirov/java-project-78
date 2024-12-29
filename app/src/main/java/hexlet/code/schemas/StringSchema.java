@@ -4,36 +4,36 @@ import org.apache.commons.lang3.StringUtils;
 
 public class StringSchema implements Schema<String> {
 
-    private boolean required;
-    private int minLength;
-    private String contains;
+    private boolean requiredField;
+    private int minLengthField;
+    private String containsField;
 
     public StringSchema required() {
-        this.required = true;
+        this.requiredField = true;
         return this;
     }
 
     public StringSchema minLength(int minLength) {
-        this.minLength = minLength;
+        this.minLengthField = minLength;
         return this;
     }
 
     public StringSchema contains(String contains) {
-        this.contains = contains;
+        this.containsField = contains;
         return this;
     }
 
     @Override
     public boolean isValid(String s) {
-        if (required && StringUtils.isBlank(s)) {
+        if (requiredField && StringUtils.isBlank(s)) {
             return false;
         }
 
-        if (minLength > 0 && (StringUtils.isBlank(s) || s.length() < minLength)) {
+        if (minLengthField > 0 && (StringUtils.isBlank(s) || s.length() < minLengthField)) {
             return false;
         }
 
-        if (StringUtils.isNotBlank(contains) && StringUtils.containsNone(s, contains)) {
+        if (StringUtils.isNotBlank(containsField) && StringUtils.containsNone(s, containsField)) {
             return false;
         }
 
