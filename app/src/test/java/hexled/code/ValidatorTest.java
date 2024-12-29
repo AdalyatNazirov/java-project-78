@@ -34,15 +34,15 @@ public class ValidatorTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
     @ValueSource(strings = "1")
-    public void testStringSchemaMinLengthReturnsFalseIfBlankOrShortString(String input) {
+    public void testStringSchemaMinLengthReturnsFalseIfTooShort(String input) {
         var schema = validator.string().minLength(3);
 
         assertFalse(schema.isValid(input));
     }
 
     @ParameterizedTest
+    @NullAndEmptySource
     @ValueSource(strings = {"hex", "hello world"})
     public void testStringSchemaMinLengthReturnsTrueIfLongSource(String input) {
         var schema = validator.string().minLength(3);
@@ -52,6 +52,14 @@ public class ValidatorTest {
 
     @ParameterizedTest
     @NullAndEmptySource
+    public void testStringSchemaMinLengthReturnsFalseIfBlankOrShortStringWhenRequired(String input) {
+        var schema = validator.string().required().minLength(3);
+
+        assertFalse(schema.isValid(input));
+    }
+
+
+    @ParameterizedTest
     @ValueSource(strings = "1")
     public void testStringSchemaContainsReturnsFalseIfContainsNone(String input) {
         var schema = validator.string().contains("wh");
@@ -60,10 +68,19 @@ public class ValidatorTest {
     }
 
     @ParameterizedTest
+    @NullAndEmptySource
     @ValueSource(strings = {"hex", "hello world"})
     public void testStringSchemaContainsReturnsTrueIfContains(String input) {
         var schema = validator.string().contains("he");
 
         assertTrue(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testStringSchemaContainsReturnsTrueIfContainsWhenRequired(String input) {
+        var schema = validator.string().required().contains("he");
+
+        assertFalse(schema.isValid(input));
     }
 }
