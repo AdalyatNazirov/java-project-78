@@ -5,17 +5,14 @@ import java.util.Map;
 public class MapSchema extends BaseSchema<Map> {
 
     public MapSchema required() {
-        addCheck(
-                "required",
-                map -> !isBlank(map)
-        );
+        required = true;
         return this;
     }
 
     public MapSchema sizeof(int size) {
         addCheck(
                 "sizeof",
-                map -> isBlank(map) || map.keySet().size() == size
+                map -> map.keySet().size() == size
         );
         return this;
     }
