@@ -19,7 +19,7 @@ public class ValidatorTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void testStringSchemaRequiredReturnFalseIfNullSource(String input) {
+    public void testStringSchemaRequiredReturnsFalseIfNullSource(String input) {
         var schema = validator.string().required();
 
         assertFalse(schema.isValid(input));
@@ -27,8 +27,42 @@ public class ValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"a", "hex", "hello world"})
-    public void testStringSchemaRequiredReturnFalseIfNotNullSource(String input) {
+    public void testStringSchemaRequiredReturnsTrueIfNotNullSource(String input) {
         var schema = validator.string().required();
+
+        assertTrue(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = "1")
+    public void testStringSchemaMinLengthReturnsFalseIfBlankOrShortString(String input) {
+        var schema = validator.string().minLength(3);
+
+        assertFalse(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"hex", "hello world"})
+    public void testStringSchemaMinLengthReturnsTrueIfLongSource(String input) {
+        var schema = validator.string().minLength(3);
+
+        assertTrue(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = "1")
+    public void testStringSchemaContainsReturnsFalseIfContainsNone(String input) {
+        var schema = validator.string().contains("wh");
+
+        assertFalse(schema.isValid(input));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"hex", "hello world"})
+    public void testStringSchemaContainsReturnsTrueIfContains(String input) {
+        var schema = validator.string().contains("he");
 
         assertTrue(schema.isValid(input));
     }
